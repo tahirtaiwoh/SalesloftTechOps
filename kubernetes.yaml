@@ -1,0 +1,45 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: random-api
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: random-api
+  namespace: random-api
+  labels:
+    app: random-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: random-api
+  template:
+    metadata:
+      labels:
+        app: random-api
+    spec:
+      containers:
+        - name: random-api
+          image: random-api:latest
+          ports:
+            - containerPort: 5000
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: random-api
+  namespace: random-api
+spec:
+  selector:
+    app: random-api
+  ports:
+    - name: http
+      port: 80
+      targetPort: 5000
+  type: ClusterIP
